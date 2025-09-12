@@ -1,1 +1,2 @@
-# Basics-Class-Technology-Web-Development
+# 기초웹개발론
+제주대학교 카카오트랙의 기초웹개발론 실습 레포지토리입니다.
