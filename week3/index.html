@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <title>Message</title>
+<body>
+  <script>
+    // TODO: Add Hello code
+    // function getMessage(name) {
+    //   return `Hello, ${name}...`; // 리터널 방식으로 변경
+    // }
+
+    // const message = getMessage('Ornella');
+    // document.write(message);
+
+    // TODO : Add setTimeout code
+    
+
+
+    // setTimeout(
+    //   () => {
+    //     document.write('...Hello again!')
+    //   }, 2000
+    // );
+
+    /* 이름 소개 */
+    let intro_name = (name = '') => {
+      console.log(`Hi, I'm ${name}`);
+    }
+
+    /* 나이 소개 */
+    let intro_age = (age = 0) => {
+      console.log(`I'm ${age}years old.`);
+    }
+
+    /* 하고싶은 말 한마디 */
+    let intro_message = (message = 'Nice to meet you') => {
+      console.log(`${message}`);
+    }
+
+    let count = 0;
+
+    const introduce = setInterval(() => {
+      if (count == 0) intro_name("Hwangyerin");
+      else if (count == 1) intro_age(24);
+      else intro_message();
+      count ++;
+    }, 3000);
+  </script>
+</body>
+</html>
