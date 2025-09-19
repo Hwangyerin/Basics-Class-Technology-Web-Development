@@ -23,25 +23,28 @@
 
     /* 이름 소개 */
     let intro_name = (name = '') => {
-      console.log(`Hi, I'm ${name}`);
+      document.write(`Hi, I'm ${name}<br>`);
     }
 
     /* 나이 소개 */
     let intro_age = (age = 0) => {
-      console.log(`I'm ${age}years old.`);
+      document.write(`I'm ${age}years old.<br>`);
     }
 
     /* 하고싶은 말 한마디 */
     let intro_message = (message = 'Nice to meet you') => {
-      console.log(`${message}`);
+      document.write(`${message}<br>`);
     }
 
     let count = 0;
 
     const introduce = setInterval(() => {
-      if (count == 0) intro_name("Hwangyerin");
+      if (count == 0) intro_name("Hwang yerin");
       else if (count == 1) intro_age(24);
-      else intro_message();
+      else {
+        intro_message();
+        clearInterval(introduce);
+      };
       count ++;
     }, 3000);
   </script>
