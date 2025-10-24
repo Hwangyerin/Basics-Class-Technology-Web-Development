@@ -33,12 +33,11 @@ let flavorDistribution = transactions.reduce((acc,curr) => {
 // console.log(flavorDistribution);
 
 
-/*
-// 최대 값
+
+//최대 값
 let maxValue = Math.max(...Object.values(flavorDistribution));
-console.log(maxValue);
-*/
+// console.log(maxValue);
 
 //키 값
-let maxKey = Object.keys(flavorDistribution).filter(key => flavorDistribution[key] == maxValue);
+let maxKey = Object.keys(flavorDistribution).filter(key => flavorDistribution[key] === maxValue);
 console.log(maxKey);

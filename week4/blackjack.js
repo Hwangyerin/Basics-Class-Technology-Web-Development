@@ -50,3 +50,4 @@ if (dealerSum > 21 && playerSum > 21) {
 } else {
   console.log("Draw");
 }
+
