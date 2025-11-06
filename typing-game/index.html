@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Typing Game</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- font-awesome 추가 -->
+    <script
+      src="https://kit.fontawesome.com/a076d05399.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1><i class="fas fa-keyboard"></i> Typing Game</h1>
+      <p class="desc">
+        Practice your typing skills with a quote from <b>Sherlock Holmes</b> 🕵️‍♂️
+        <br />
+        Click <strong>Start</strong> to begin!
+      </p>
+
+      <div id="quote" class="quote-box"></div>
+      <p id="message" class="message"></p>
+
+      <div class="input-area">
+        <input
+          type="text"
+          aria-label="current word"
+          id="typed-value"
+          placeholder="Type here..."
+        />
+        <button type="button" id="start">
+          <i class="fas fa-play"></i> Start
+        </button>
+      </div>
+    </div>
+    <div id="result-modal" class="modal">
+      <div class="modal-content">
+        <span id="close-modal" class="close">&times;</span>
+        <h2>Result</h2>
+        <p id="modal-message"></p>
+        <button id="restart">Play Again</button>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
