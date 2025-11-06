@@ -1,0 +1,34 @@
+# Node.js dependencies
+node_modules/
+
+# Build output (Vite, Webpack, Parcel, etc.)
+dist/
+build/
+out/
+coverage/
+
+# Logs and temp files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+*.tmp
+
+# Editor/OS files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Chrome Extension cache
+*.crx
+*.pem
+*.zip
+
+# IDE settings
+.vscode/
+.idea/
