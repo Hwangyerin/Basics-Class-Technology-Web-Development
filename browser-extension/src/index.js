@@ -15,57 +15,68 @@ const myregion = document.querySelector('.my-region');
 const clearBtn = document.querySelector('.clear-btn');
 
 const calculateColor = async (value) => {
-	let co2Scale = [0, 150, 600, 750, 800];
-	let colors = ['#2AA364', '#F5EB4D', '#9E4229', '#381D02', '#381D02'];
+    let co2Scale = [0, 150, 600, 750, 800];
+    let colors = ['#2AA364', '#F5EB4D', '#9E4229', '#381D02', '#381D02'];
 
-	let closestNum = co2Scale.sort((a, b) => {
-		return Math.abs(a - value) - Math.abs(b - value);
-	})[0];
-	console.log(value + ' is closest to ' + closestNum);
-	let num = (element) => element > closestNum;
-	let scaleIndex = co2Scale.findIndex(num);
+    let closestNum = co2Scale.sort((a, b) => {
+        return Math.abs(a - value) - Math.abs(b - value);
+    })[0];
+    //console.log(value + ' is closest to ' + closestNum);
+    let num = (element) => element > closestNum;
+    let scaleIndex = co2Scale.findIndex(num);
 
-	let closestColor = colors[scaleIndex];
-	console.log(scaleIndex, closestColor);
+    let closestColor = colors[scaleIndex];
+    //console.log(scaleIndex, closestColor);
 
-	chrome.runtime.sendMessage({ action: 'updateIcon', value: { color: closestColor } });
+    chrome.runtime.sendMessage({ action: 'updateIcon', value: { color: closestColor } });
 };
 
-const displayCarbonUsage = async (apiKey, region) => {
-	try {
-		await axios
-			.get('https://api.co2signal.com/v1/latest', {
-				params: {
-					countryCode: region,
-				},
-				headers: {
-					//please get your own token from CO2Signal https://www.co2signal.com/
-					'auth-token': apiKey,
-				},
-			})
-			.then((response) => {
-				let CO2 = Math.floor(response.data.data.carbonIntensity);
+async function displayCarbonUsage(apiKey, region) {
+    try {
+        // Fetch carbon intensity data from CO2 Signal API
+        const response = await fetch('https://api.electricitymaps.com/v3/carbon-intensity/latest', {
+            method: 'GET',
+            headers: {
+                'auth-token': apiKey,
+                'Content-Type': 'application/json'
+            },
+            // Add query parameters for the specific region
+            ...new URLSearchParams({ countryCode: region }) && {
+                url: `https://api.electricitymaps.com/v3/carbon-intensity/latest?countryCode=${region}`
+            }
+        });
 
-				calculateColor(CO2);
+        // Check if the API request was successful
+        if (!response.ok) {
+            throw new Error(`API request failed: ${response.status}`);
+        }
 
-				loading.style.display = 'none';
-				form.style.display = 'none';
-				myregion.textContent = region;
-				usage.textContent =
-					Math.round(response.data.data.carbonIntensity) + ' grams (grams C02 emitted per kilowatt hour)';
-				fossilfuel.textContent =
-					response.data.data.fossilFuelPercentage.toFixed(2) +
-					'% (percentage of fossil fuels used to generate electricity)';
-				results.style.display = 'block';
-			});
-	} catch (error) {
-		console.log(error);
-		loading.style.display = 'none';
-		results.style.display = 'none';
-		errors.textContent = 'Sorry, we have no data for the region you have requested.';
-	}
-};
+        const data = await response.json();
+        const carbonData = data;
+        // Calculate rounded carbon intensity value
+        let carbonIntensity = Math.round(carbonData.carbonIntensity);
 
+        calculateColor(carbonIntensity);
+
+        // Update the user interface with fetched data
+        loading.style.display = 'none';
+        form.style.display = 'none';
+        myregion.textContent = region.toUpperCase();
+        usage.textContent = `${carbonIntensity} grams (grams CO₂ emitted per kilowatt hour)`;
+        // fossilfuel.textContent = `${carbonData.fossilFuelPercentage.toFixed(2)}% (percentage of fossil fuels used to generate electricity)`;
+        results.style.display = 'block';
+
+        // TODO: calculateColor(carbonIntensity) - implement in next lesson
+
+    } catch (error) {
+        console.error('Error fetching carbon data:', error);
+        
+        // Show user-friendly error message
+        loading.style.display = 'none';
+        results.style.display = 'none';
+        errors.textContent = 'Sorry, we couldn\'t fetch data for that region. Please check your API key and region code.';
+    }
+}
 // set up api key and region
 const setUpUser = async (apiKey, regionName) => {
 	localStorage.setItem('apiKey', apiKey);
@@ -83,36 +94,31 @@ const handleSubmit = async (e) => {
 	setUpUser(apiKey.value, region.value);
 };
 
+
 //initial checks
-const init = async () => {
-	//if anything is in localStorage, pick it up
-	const storedApiKey = localStorage.getItem('apiKey');
-	const storedRegion = localStorage.getItem('regionName');
+function init() {
+    // Check if user has previously saved API credentials
+    const storedApiKey = localStorage.getItem('apiKey');
+    const storedRegion = localStorage.getItem('regionName');
 
-	//set icon to be generic green
-	chrome.runtime.sendMessage({
-		action: 'updateIcon',
-		value: {
-			color: 'green',
-		},
-	});
+    // Set extension icon to generic green (placeholder for future lesson)
+    // TODO: Implement icon update in next lesson
 
-	if (storedApiKey === null || storedRegion === null) {
-		//if we don't have the keys, show the form
-		form.style.display = 'block';
-		results.style.display = 'none';
-		loading.style.display = 'none';
-		clearBtn.style.display = 'none';
-		errors.textContent = '';
-	} else {
-		//if we have saved keys/regions in localStorage, show results when they load
-		results.style.display = 'none';
-		form.style.display = 'none';
-		displayCarbonUsage(storedApiKey, storedRegion);
-		clearBtn.style.display = 'block';
-	}
-};
-
+    if (storedApiKey === null || storedRegion === null) {
+        // First-time user: show the setup form
+        form.style.display = 'block';
+        results.style.display = 'none';
+        loading.style.display = 'none';
+        clearBtn.style.display = 'none';
+        errors.textContent = '';
+    } else {
+        // Returning user: load their saved data automatically
+        displayCarbonUsage(storedApiKey, storedRegion);
+        results.style.display = 'none';
+        form.style.display = 'none';
+        clearBtn.style.display = 'block';
+    }
+}
 const reset = async (e) => {
 	e.preventDefault();
 	//clear local storage for region only

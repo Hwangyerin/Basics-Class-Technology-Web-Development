@@ -1,11 +1,12 @@
 {
-  "manifest_version": 3,
-  "name": "Personal Carbon Trigger",
-  "version": "1.0.0",
-  "description": "View your region's carbon intensity and fossil fuel usage.",
-  "action": {
-    "default_popup": "index.html",
-    "default_icon": "images/plants-people.png"
-  },
-  "permissions": ["storage", "activeTab", "scripting"]
+    "manifest_version": 3,
+    "name": "My Carbon Trigger",
+    "version": "0.1.0",
+    "host_permissions": ["<all_urls>"],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_popup": "index.html"
+    }
 }
