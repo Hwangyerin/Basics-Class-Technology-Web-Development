@@ -31,6 +31,3 @@ Thumbs.db
 # IDE settings
 .vscode/
 .idea/
-
-#dist
-dist/
